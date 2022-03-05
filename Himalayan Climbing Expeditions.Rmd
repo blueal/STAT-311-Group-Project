@@ -1,0 +1,148 @@
+---
+title: "Maximizing Elevation in the Himalayas"
+author: "Carter Burr, Jack Schreuder, Alex Friedberg"
+date: "`r Sys.Date()`"
+output: openintro::lab_report
+---
+
+```{r load-packages, message=FALSE, echo = FALSE}
+library(tidyverse)
+library(openintro)
+library(broom)
+library(lubridate)
+library(tidymodels)
+expeditions <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-09-22/expeditions.csv')
+```
+
+## Introduction
+
+For our final project, we decided to use a dataset compiled by Alex Cookson, where he first posted it to his blog at https://www.alexcookson.com/post/analyzing-himalayan-peaks-first-ascents/ , which we were able to then later find in the tidytuesday
+github repository at https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-09-22/readme.md. 
+
+This data was collected by [The Himalayan Database](https://www.himalayandatabase.com/), which is a complication of over 10,000 climbs of over 450 peaks in the Nepal Himalayas starting from 1905 to 2019. The individuals of the data are each different climber that attempted a climb between 1905 and 2019, including the hired helpers that would assist on each climb. When looking at the different variables with this data set, we can see that each expedition and mountain is identified, as well as the year and season with which the climb took place. This data also includes the dates that the expedidtion left base camp, as well as when they reached their high point and their entire journey was over.  
+
+
+
+### Scientific Context
+
+For mountain climbing enthusiasts, there is no greater story to tell than the one of how high they climbed in the Himalayan mountains. But climbing these uniquely enormous mountains is more than just pride, about one quarter of peaks in the Himalayan mountain range have never been climbed before. The human sense of adventure is insatiable, and not even the dangers of altitude sickness, extreme temperatures, and ever changing terrain can dissuade people from trying to climb up these mountains. Given the high level of danger and difficulty involved, it is important for climbers to understand factors that contribute to a successful climb, because if they don't the trip could be deadly for them and their sherpas. So how do climbers achieve the highest height they can? That is what we aim to answer with our analysis of this data.
+
+
+### Codebook
+
+Name of Variable   | Explanation
+-------------------|-------------
+expedition_id      | A unique chr that corresponds to each expedition
+peak_id            | A three character chr that uniquely corresponds to each peak
+peak_name          | The name (chr) of the peak that this expedition is climbing
+year               | The year (dbl) during which the expedition happened
+season             | The season the expedition happend in as a chr, either 'Spring', 'Autumn', 'Winter', or 'Summer'
+highpoint_metres   | A dbl expressing the highest point (in meters) the expedition reached before termination
+members            | A dbl showing the number of non-hired members in the expedition
+member_death       | The number (dbl) of members who died during the expedition
+hired_staff        | The number (dbl) of hired staff, aka sherpas, who went on the expedition
+hired_staff_deaths | A dbl expressing the number of hired staff who died during the expedition
+oxygen_used        | A lgl variable where True means at least one member or hired staff used oxygen at any point, and False means that nobody ever used oxygen
+trekking_agency    | The chr name of trekking agency from which the hired staff where hired. Appears as NA if no staff were hired
+
+
+### Glimpse of our data
+```{r codeblock1, echo = FALSE}
+glimpse(expeditions)
+```
+
+
+## Data Analysis Plan
+
+For this project, we are choosing our outcome variable to be highpoint_metres, which is the highest point, in meters, that a climb successfully reached. In order to analyze this outcome, we have chosen four predicting variables, two numeric and two categorical. For the numeric variables, we decided to look at the number of members participating in the climb(members) and the number of hired staff(hired_staff) that are participating in the climb. The two categorical variables that we have decided to use were the season(season) which the expedition took place, and whether or not the climbers decided to use oxygen or not(oxygen_used). These diverse variables provide us with a great opportunity to see what there impacts are on how high of an altitude that each climb will reach. 
+
+
+### Potential Challenges
+
+When looking at our data set and the specific variables that we wish to look at, a few challenges arise. The biggest challenge with our data set is the dramatic differences in peak values that very between each mountain. This might skew the middle of our data, as those who might have made it higher with a higher mountain could be limited to a mountain having a lower peak. A trend that may be true for a higher mountain may not show the same on a smaller mountain, making it harder to visualize the impact of the explanatory variables on the response variables. 
+
+Another really big challenge with our data set is the amount of missing values that are sprinkled throughout each category. This might skew our data in different ways that could have serious impact on our results.
+
+
+### Summary Statistic and Visualizations
+
+#### Highest Elevation Reached
+
+```{r summary1, echo = FALSE, warning=FALSE}
+
+
+expeditions %>% ggplot(aes(x = highpoint_metres)) +
+  geom_histogram(binwidth = 137) +
+  xlab("Highest Point Reached in an Expedition (meters)") +
+  ylab("Count of Expeditions") +
+  labs(title = "Count of Highest Elevations Reached by Expeditions", subtitle = "Data from Expedition data set by Alex Cookson", caption = "3/2/22")
+
+expeditions %>% summarize(altitude_mean = mean(highpoint_metres, na.rm = TRUE),
+                          altitude_median = median(highpoint_metres, na.rm = TRUE),
+                          altitude_max = max(highpoint_metres, na.rm = TRUE),
+                          altitude_min = min(highpoint_metres, na.rm = TRUE))
+
+```
+
+
+When looking at this visualization and the summary statistics for the highest point of elevation reached for each climb, we can see that on average climbers reach an altitude of 7409 meters. When looking at the histogram, we can see that it is multimodal with 3 very distinct peaks. This is probably because of people reaching the peaks of the most popular mountains. We can also see that there it is very slightly skewed-left, as the median is lower than the mean and the altitude has a very low minimum with a graph that tails off to the left. We also see that the altitudes have a range of 5350 meters, which is a lot of variety between what altitude climbers reach.
+
+#### Party Size
+
+```{r summary2, echo=FALSE, warning=FALSE}
+expeditions <- expeditions %>% mutate(party_size = members + hired_staff)
+ggplot(data = expeditions, mapping=aes(x = party_size)) +
+  geom_histogram(binwidth = 2)+
+  xlim(0, 75) +
+  xlab("Amount of people in an expedition party (members + hired_staff)") +
+  ylab("Count of Expeditions") +
+  labs(title = "Count of Party Size for Expeditions", subtitle = "Data from Expedition data set by Alex Cookson", caption = "3/2/22")
+
+expeditions %>% summarize(mem_mean = mean(members, na.rm=TRUE),
+                          mem_median = median(members, na.rm=TRUE),
+                          mem_max = max(members, na.rm=TRUE),
+                          mem_min = min(members, na.rm=TRUE),
+                          party_mean = mean(party_size),
+                          party_median = median(party_size),
+                          party_max = max(party_size),
+                          party_min = min(party_size))
+```
+
+What we notice from this second summary piece is that while there is quite a large variance in the size of a party, most are between 1 and 20. The relationship is a strong exponential decrease. The mean for members alone is 5.9, and the median is 5, which indicates, when paired with the mean and median for party size (8.7 and 6 respectively), that there are typically fewer hired staff in an expedition party. We also see some expeditions include zero party members which must be a mistake since there cannot be an expedition with no people, therefore, these rows should be removed. We also should notice that some parties are incredibly large, maxing out at nearly 200 people, however this size of party is grossly in the minority. 
+
+#### Season
+
+```{r summary3, echo=FALSE, warning=FALSE}
+ggplot(data = expeditions %>% filter(season != "Unknown"), mapping=aes(x = season)) +
+  geom_bar()+
+  xlab("Season") +
+  ylab("Count of Expeditions") +
+  labs(title = "Count of Expeditions in Each Season", subtitle = "Data from Expedition data set by Alex Cookson", caption = "3/2/22")
+
+ggplot(data = expeditions %>% filter(season != "Unknown"), mapping=aes(x = season, y = highpoint_metres)) +
+  geom_boxplot()+
+  xlab("Season") +
+  ylab("Highest Point (meters)") +
+  labs(title = "Highest Point Reached by Expeditions in Each Season", subtitle = "Data from Expedition data set by Alex Cookson", caption = "3/2/22")
+
+season_summary <- expeditions %>% 
+  group_by(season) %>%
+  na.omit(season, highpoint_metres) %>%
+  summarise(count = n(),
+            mean = mean(highpoint_metres),
+            median = median(highpoint_metres),
+            min = min(highpoint_metres),
+            max = max(highpoint_metres),
+            IQR = IQR(highpoint_metres)) %>%
+  column_to_rownames("season")
+season_summary
+```
+There is  stark contrast to the amount of expeditions in each season. Looking at our first bar graph, we see that Summer is actually the least popular Season by far at only `r season_summary["Summer", "count"]` recorded expeditions, with winter in a close second at `r season_summary["Winter", "count"]`. The relative difference between Autumn and Spring is minimal at `r abs(season_summary["Autumn", "count"] - season_summary["Spring", "count"])`, but Spring to Summer is a drastic change at `r abs(season_summary["Spring", "count"] - season_summary["Winter", "count"])`. Looking at the box-plot graph, we can clearly see Spring has the highest maximum elevation reached at `r season_summary["Spring", "median"]` and the highest average at `r season_summary["Spring", "max"]`. Overall however, the average elevation reached across all seasons is relatively steady: `r season_summary$median`. Interestingly, Winter had the highest minimum elevation reached at `r season_summary["Winter", "min"]`.
+
+
+
+### Bibliography
+https://www.alexcookson.com/post/analyzing-himalayan-peaks-first-ascents/ 
+https://peakclimbingnepal.com/dangers-of-climbing-mount-everest/
+https://www.britannica.com/place/Himalayas/Study-and-exploration
+...
