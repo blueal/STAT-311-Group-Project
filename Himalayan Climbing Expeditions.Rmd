@@ -139,7 +139,7 @@ season_summary
 ```
 There is  stark contrast to the amount of expeditions in each season. Looking at our first bar graph, we see that Summer is actually the least popular Season by far at only `r season_summary["Summer", "count"]` recorded expeditions, with winter in a close second at `r season_summary["Winter", "count"]`. The relative difference between Autumn and Spring is minimal at `r abs(season_summary["Autumn", "count"] - season_summary["Spring", "count"])`, but Spring to Summer is a drastic change at `r abs(season_summary["Spring", "count"] - season_summary["Winter", "count"])`. Looking at the box-plot graph, we can clearly see Spring has the highest maximum elevation reached at `r season_summary["Spring", "median"]` and the highest average at `r season_summary["Spring", "max"]`. Overall however, the average elevation reached across all seasons is relatively steady: `r season_summary$median`. Interestingly, Winter had the highest minimum elevation reached at `r season_summary["Winter", "min"]`.
 
-
+###TEST DELETE THIS
 
 ### Bibliography
 https://www.alexcookson.com/post/analyzing-himalayan-peaks-first-ascents/ 
