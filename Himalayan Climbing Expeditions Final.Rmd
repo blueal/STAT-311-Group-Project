@@ -1,0 +1,99 @@
+---
+title: "Maximizing Elevation in the Himalayas"
+author: "Carter Burr, Jack Schreuder, Alex Friedberg"
+date: "`r Sys.Date()`"
+output: openintro::lab_report
+---
+
+```{r load-packages, message=FALSE, echo = FALSE}
+library(tidyverse)
+library(openintro)
+library(broom)
+library(lubridate)
+library(tidymodels)
+expeditions <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-09-22/expeditions.csv')
+```
+
+## Introduction
+
+
+SHOULD MAKE AN INTRODUCTION MORE ABOUT THE TOPIC THAN ABOUT THE DATASET, Talk about how we are deciding to just use Everest to keep consistent data, and how it still has enough datapoints. 
+
+For our final project, we decided to use a dataset compiled by Alex Cookson, where he first posted it to his blog at https://www.alexcookson.com/post/analyzing-himalayan-peaks-first-ascents/ , which we were able to then later find in the tidytuesday
+github repository at https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-09-22/readme.md. 
+
+This data was collected by [The Himalayan Database](https://www.himalayandatabase.com/), which is a complication of over 10,000 climbs of over 450 peaks in the Nepal Himalayas starting from 1905 to 2019. The individuals of the data are each different climber that attempted a climb between 1905 and 2019, including the hired helpers that would assist on each climb. When looking at the different variables with this data set, we can see that each expedition and mountain is identified, as well as the year and season with which the climb took place. This data also includes the dates that the expedition left base camp, as well as when they reached their high point and their entire journey was over.  
+
+
+
+### Scientific Context
+
+For mountain climbing enthusiasts, there is no greater story to tell than the one of how high they climbed in the Himalayan mountains. But climbing these uniquely enormous mountains is more than just pride, about one quarter of peaks in the Himalayan mountain range have never been climbed before. The human sense of adventure is insatiable, and not even the dangers of altitude sickness, extreme temperatures, and ever changing terrain can dissuade people from trying to climb up these mountains. Given the high level of danger and difficulty involved, it is important for climbers to understand factors that contribute to a successful climb, because if they don't the trip could be deadly for them and their sherpas. So how do climbers achieve the highest height they can? That is what we aim to answer with our analysis of this data.
+
+
+### Codebook
+
+Name of Variable   | Explanation
+-------------------|-------------
+expedition_id      | A unique chr that corresponds to each expedition
+peak_name          | The name (chr) of the peak that this expedition is climbing
+year               | The year (dbl) during which the expedition happened
+season             | The season the expedition happend in as a chr, either 'Spring', 'Autumn', 'Winter', or 'Summer'
+highpoint_metres   | A dbl expressing the highest point (in meters) the expedition reached before termination
+members            | A dbl showing the number of non-hired members in the expedition
+member_death       | The number (dbl) of members who died during the expedition
+hired_staff        | The number (dbl) of hired staff, aka sherpas, who went on the expedition
+hired_staff_deaths | A dbl expressing the number of hired staff who died during the expedition
+oxygen_used        | A lgl variable where True means at least one member or hired staff used oxygen at any point, and False means that nobody ever used oxygen
+trekking_agency    | The chr name of trekking agency from which the hired staff where hired. Appears as NA if no staff were hired
+
+
+### Glimpse of our data
+```{r codeblock1, echo = FALSE}
+glimpse(expeditions)
+```
+
+
+```{r refiningData, echo = FALSE, warning= FALSE}
+expeditions <- filter(expeditions, peak_name == "Everest")
+```
+
+
+## Model Building
+
+Need 3 different models that measure 3 different explanatory variables for our response variable each. Need to brainstorm which models would be the best. 
+
+
+```{r splittingData}
+set.seed(3521)
+#We can set the seed to whatever.
+expeditions_split <- initial_split(expeditions, prop = 0.50)
+
+expeditions_train <- training(expeditions_split)
+expeditions_test <- testing(expeditions_split)
+```
+*This can be what we use for our 50-50 data split, we can change the seed as long as we keep it consistent. 
+
+
+### Model 1
+```{r model1, echo = FALSE, warning = FALSE}
+
+```
+
+Explanation
+
+
+### Model 2
+```{r model2, echo = FALSE, warning = FALSE}
+
+```
+
+Explanation
+
+
+### Model 3
+```{r model3, echo = FALSE, warning = FALSE}
+
+```
+
+Explanation
