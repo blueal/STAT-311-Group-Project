@@ -77,7 +77,7 @@ expeditions_test <- testing(expeditions_split)
 
 ### Model 1
 ```{r model1, echo = FALSE, warning = FALSE}
-
+Carter
 ```
 
 Explanation
@@ -85,7 +85,7 @@ Explanation
 
 ### Model 2
 ```{r model2, echo = FALSE, warning = FALSE}
-
+Jack
 ```
 
 Explanation
@@ -93,7 +93,7 @@ Explanation
 
 ### Model 3
 ```{r model3, echo = FALSE, warning = FALSE}
-
+Alex
 ```
 
 Explanation
