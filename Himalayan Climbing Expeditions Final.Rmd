@@ -97,8 +97,6 @@ graph3 <- expeditions_train %>% ggplot(mapping = aes(x = season, y = highpoint_m
 
 graph1+graph2+graph3
   
-
-
 ```
 
 #### Interpretation
@@ -137,7 +135,6 @@ Looking at our model, we get a R^2 value of 0.123, and an adjusted R^2 value of 
 
 
 ### Model 2
-<<<<<<< HEAD
 ```{r model3, echo = FALSE, warning = FALSE}
 Jack
 ```
