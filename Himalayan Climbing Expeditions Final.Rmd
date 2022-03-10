@@ -69,7 +69,7 @@ Need 3 different models that measure 3 different explanatory variables for our r
 
 ```{r splittingData, echo = FALSE}
 set.seed(3521)
-#We can set the seed to whatever.
+
 expeditions_split <- initial_split(expeditions, prop = 0.50)
 
 expeditions_train <- training(expeditions_split)
@@ -79,10 +79,9 @@ expeditions_test <- testing(expeditions_split)
 
 
 ### Model 1
-<<<<<<< Updated upstream
+
 #### Model Proposed by Carter
-=======
->>>>>>> Stashed changes
+
 ```{r model1_explanation, warning=FALSE, echo = FALSE}
 
 graph1 <- expeditions_train %>% ggplot(mapping = aes(x = members,y = highpoint_metres)) +
@@ -100,8 +99,6 @@ graph3 <- expeditions_train %>% ggplot(mapping = aes(x = season, y = highpoint_m
 
 
 graph1+graph2+graph3
-  
-
 
 ```
 
@@ -138,10 +135,6 @@ When looking at the main model equation that we made, we can intrepet a few thin
 
 ##### R^2 and RSME Values
 Looking at our model, we get a R^2 value of 0.123, and an adjusted R^2 value of 0.117. These values are lower then what we would like to see, and it means that our indpendent variables have less correlation with the response variable than we would like. When we look at our RSME we get a value of 545.19. This value is a lot higher than we would like to see, as it shows us that we are experiencing a lot of error in our prediction model. Although this value is very high, when we look at the dataset, highpoint_metres is measured in thousands of meters, which is something we have to take into account when viewing this value. Although it is still higher than what we would like to see, it is not tremendously horrible when looking at the scale of the dataset. 
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
 
 
 ### Model Proposed by Jack
