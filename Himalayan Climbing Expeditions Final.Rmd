@@ -11,6 +11,8 @@ library(openintro)
 library(broom)
 library(lubridate)
 library(tidymodels)
+library(GGally)
+library(patchwork)
 expeditions <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-09-22/expeditions.csv')
 ```
 
@@ -64,7 +66,7 @@ expeditions <- filter(expeditions, peak_name == "Everest")
 Need 3 different models that measure 3 different explanatory variables for our response variable each. Need to brainstorm which models would be the best. 
 
 
-```{r splittingData}
+```{r splittingData, echo = FALSE}
 set.seed(3521)
 #We can set the seed to whatever.
 expeditions_split <- initial_split(expeditions, prop = 0.50)
@@ -76,16 +78,118 @@ expeditions_test <- testing(expeditions_split)
 
 
 ### Model 1
-```{r model1, echo = FALSE, warning = FALSE}
-Carter
+#### Model Proposed by Carter
+```{r model1_explanation, warning=FALSE, echo = FALSE}
+
+graph1 <- expeditions_train %>% ggplot(mapping = aes(x = members,y = highpoint_metres)) +
+  geom_point() +
+  geom_smooth(method = "loess", formula = y ~ x)
+
+graph2 <- expeditions_train %>% ggplot(mapping = aes(x = oxygen_used, y = highpoint_metres)) +
+  geom_boxplot(outlier.colour="black", outlier.shape=4,
+             outlier.size=2, notch=FALSE)
+
+graph3 <- expeditions_train %>% ggplot(mapping = aes(x = season, y = highpoint_metres)) +
+  geom_boxplot(outlier.colour="black", outlier.shape=4,
+             outlier.size=2, notch=FALSE)
+
+
+
+graph1+graph2+graph3
+  
+
+
 ```
 
-Explanation
+#### Interpretation
+When deciding on what 3 explanatory variables I would be using for my model in order to best predict my response variable, I first started out with some background research to get a few ideas. First off, I looked at oxygen_used, and found many benefits to including the use of oxygen while reaching very high elevations. I also found research on the differences of climbing season. These looked like two very good categorical variables, I needed a numeric. To further look into this, I decided to make 3 seperate graphs with each of the variables I wished to use and saw how they individually looked against highpoint_metres. First off, I started with a point graph and looked at the correlation between members and highpoint, and saw that as the members increased the highpoint would also increase, but not by very much amount. Next, I looked at boxplots between if oxygen was used and its correlation to highpoint. Looking at this plot, we can clearly see that we would expect those who use oxygen to reach a higher point, as they appear to have an average and inter-quartile range much higher than those who do not use oxygen. Last off, I look at the effect season had on the high point, and saw some interesting results. First off, it appears we would get the highest on average with the least amount of range in Autumn. In spring the median is the same as autumn, but has more range in the 25%-50% quartile. Winter shows a slightly lower median, and then lastly we see summer with the lowest. These charts help us better understand what values and correlations to expect when we are making our model.  
 
 
+
+```{r model1, echo = FALSE, warning = FALSE}
+
+expeditions_model <- lm(highpoint_metres ~ members + oxygen_used + 
+                        season, data = expeditions_train)
+tidy(expeditions_model)
+
+expeditions_pred <- predict(expeditions_model, newdata = expeditions_test) %>%
+  bind_cols(expeditions_test %>% select(highpoint_metres)) %>%
+  rename(pred = ...1)
+
+expeditions_pred
+
+glance(expeditions_model) %>% select(r.squared, adj.r.squared)
+
+
+rmse(expeditions_pred, truth = highpoint_metres, estimate = pred)
+```
+
+#### Explanation:
+
+##### Main Model Equation
+Highpoint_metres = 7667.79 + 22.53*Memebers + 285.62*Oxygen_usedTRUE + 5.47*WinterYes - 58.25*SpringYes - + 245.23*SummerYes
+
+##### Main Model Interpretation:
+When looking at the main model equation that we made, we can intrepet a few things. First off, our intercept is 7667.79, meainging if you put in 0 for all of the values, we would expect the climber to make it up to 7667.79 meters. Now when we look at memebers, we can see a coefficient of 22.53, meaning that with each member you add, you are expected to reach 22.53 meters higher on average. Although this does not seem very significant, some parties can have 30 to 40 members, which gives a huge boost to the height you would be expected to reach. Looking at the oxygen categorical variable, we can see that if you use oxygen you are expected to reach 285.62 meters higher on average, which is a pretty significant value. Looking at the seasons, we can see that it is using autumn as a baseline, so for that season you do not add or subtract anything. For the summer on average you would lose 245.23 meters on your high point, in the spring you would lose 58.25 meters on average for your high point, and finally in the winter you would expect to gain only 5 meters on average to your high point. 
+
+##### R^2 and RSME Values
+Looking at our model, we get a R^2 value of 0.123, and an adjusted R^2 value of 0.117. These values are lower then what we would like to see, and it means that our indpendent variables have less correlation with the response variable than we would like. When we look at our RSME we get a value of 545.19. This value is a lot higher than we would like to see, as it shows us that we are experiencing a lot of error in our prediction model. Although this value is very high, when we look at the dataset, highpoint_metres is measured in thousands of meters, which is something we have to take into account when viewing this value. Although it is still higher than what we would like to see, it is not tremendously horrible when looking at the scale of the dataset. 
+
+
+<<<<<<< Updated upstream
 ### Model 2
 ```{r model2, echo = FALSE, warning = FALSE}
 Jack
+=======
+### Model Proposed by Jack
+
+#### New Calculated Variables for Modeling
+
+```{r calculated-variables, echo = FALSE}
+m2_df <- expeditions %>% 
+  mutate(trek = ifelse(is.na(trekking_agency), "No Agency", "Used Agency"))
+
+m2_df <- m2_df %>% mutate(party_size = members + hired_staff)
+
+set.seed(3521)
+
+m2_df_split <- initial_split(m2_df, prop = 0.5)
+m2_train <- training(m2_df_split)
+m2_test <- testing(m2_df_split)
+```
+
+#### Party Size Bootstrap Visual
+
+```{r party-size-bootstrap-dist, echo = FALSE}
+m2_boot_df <- m2_train %>% specify(highpoint_metres ~ party_size) %>%
+                generate(reps = 1000, type = "bootstrap") %>%
+                calculate(stat = "slope")
+
+ci_m2 <- m2_boot_df %>%
+          get_confidence_interval(level = 0.95)
+m2_boot_df %>% visualize() + shade_ci(endpoints = ci_m2)
+```
+
+#### Model
+
+```{r model2, echo = FALSE, warning = FALSE}
+m2_main_fit <- lm(highpoint_metres ~ party_size + trek + season, data=m2_train)
+tidy(m2_main_fit)
+
+glance(m2_main_fit) %>% select(r.squared, adj.r.squared)
+```
+
+#### Model Evaluation
+
+```{r evaluate-m2, echo = FALSE}
+hp_pred <- predict(m2_main_fit, newdata=m2_test) %>%
+  bind_cols(m2_test %>% select(highpoint_metres) ) %>%
+  rename(pred = ...1)
+
+glimpse(hp_pred)
+
+rmse(hp_pred, truth=highpoint_metres, estimate=pred)
+>>>>>>> Stashed changes
 ```
 
 Explanation
