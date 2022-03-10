@@ -66,7 +66,7 @@ Need 3 different models that measure 3 different explanatory variables for our r
 
 ```{r splittingData}
 set.seed(3521)
-#We can set the seed to whatever.
+
 expeditions_split <- initial_split(expeditions, prop = 0.50)
 
 expeditions_train <- training(expeditions_split)
@@ -77,28 +77,7 @@ expeditions_test <- testing(expeditions_split)
 
 ### Model 1
 ```{r model1, echo = FALSE, warning = FALSE}
-<<<<<<< HEAD
-
-<<<<<<< HEAD
-expeditions_model <- lm(highpoint_metres ~ members + oxygen_used + 
-                        season, data = expeditions_train)
-tidy(expeditions_model)
-
-expeditions_pred <- predict(expeditions_model, newdata = expeditions_test) %>%
-  bind_cols(expeditions_test %>% select(highpoint_metres)) %>%
-  rename(pred = ...1)
-
-expeditions_pred
-
-glance(expeditions_model) %>% select(r.squared, adj.r.squared)
-
-
-rmse(expeditions_pred, truth = highpoint_metres, estimate = pred)
-=======
->>>>>>> parent of 67996da (Update Himalayan Climbing Expeditions Final.Rmd)
-=======
 Carter
->>>>>>> parent of a9ef189 (Update Himalayan Climbing Expeditions Final.Rmd)
 ```
 
 Explanation
@@ -108,13 +87,6 @@ Explanation
 <<<<<<< HEAD
 ```{r model3, echo = FALSE, warning = FALSE}
 Jack
-<<<<<<< HEAD
-=======
-```{r model2, echo = FALSE, warning = FALSE}
-
->>>>>>> parent of 67996da (Update Himalayan Climbing Expeditions Final.Rmd)
-=======
->>>>>>> parent of a9ef189 (Update Himalayan Climbing Expeditions Final.Rmd)
 ```
 
 Explanation
@@ -122,7 +94,7 @@ Explanation
 
 ### Model 3
 ```{r model3, echo = FALSE, warning = FALSE}
-
+Alex
 ```
 
 Explanation
