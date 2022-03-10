@@ -108,6 +108,7 @@ When deciding on what 3 explanatory variables I would be using for my model in o
 
 ```{r model1, echo = FALSE, warning = FALSE}
 
+<<<<<<< HEAD
 expeditions_model <- lm(highpoint_metres ~ members + oxygen_used + 
                         season, data = expeditions_train)
 tidy(expeditions_model)
@@ -122,6 +123,8 @@ glance(expeditions_model) %>% select(r.squared, adj.r.squared)
 
 
 rmse(expeditions_pred, truth = highpoint_metres, estimate = pred)
+=======
+>>>>>>> parent of 67996da (Update Himalayan Climbing Expeditions Final.Rmd)
 ```
 
 #### Explanation:
@@ -137,8 +140,13 @@ Looking at our model, we get a R^2 value of 0.123, and an adjusted R^2 value of 
 
 
 ### Model 2
+<<<<<<< HEAD
 ```{r model3, echo = FALSE, warning = FALSE}
 Jack
+=======
+```{r model2, echo = FALSE, warning = FALSE}
+
+>>>>>>> parent of 67996da (Update Himalayan Climbing Expeditions Final.Rmd)
 ```
 
 Explanation
@@ -146,7 +154,7 @@ Explanation
 
 ### Model 3
 ```{r model3, echo = FALSE, warning = FALSE}
-Alex
+
 ```
 
 Explanation
