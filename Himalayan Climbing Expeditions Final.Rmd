@@ -11,6 +11,8 @@ library(openintro)
 library(broom)
 library(lubridate)
 library(tidymodels)
+library(GGally)
+library(patchwork)
 expeditions <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-09-22/expeditions.csv')
 ```
 
