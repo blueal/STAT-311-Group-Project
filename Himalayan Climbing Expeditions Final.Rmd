@@ -19,9 +19,10 @@ expeditions <- readr::read_csv('https://raw.githubusercontent.com/rfordatascienc
 ## Introduction
 
 
-SHOULD MAKE AN INTRODUCTION MORE ABOUT THE TOPIC THAN ABOUT THE DATASET, Talk about how we are deciding to just use Everest to keep consistent data, and how it still has enough datapoints. 
-
 This analysis will focus on climbing data for a Himalyan Mountain called 'Cho Oyu'. Cho Oyu is the sixth highest mountain on the planet, with a peak at 8188 meters above sea level. The reason we've chosen this peak is that it is considered to be one of the most accessible peaks in the Himalayas, and as such is a popular destination for climbers of many different skill levels. Note: referring to a 8000+ meter mountain as 'accessible' is a little bit of an oxymoron, but when compared to notoriously difficult mountains like K2 and Everest, the description is fairly accurate. The original data set is incredibly large, and contains data for many mountains, both hundreds of meter taller, and shorter than Cho Oyu. Choosing one mid-to-tall peak allows us to see the true effect of all the variables without being limited by the size of difficulty of other peaks. Additionally, Cho Oyu alone has more than enough data entries to make and educated conclusion about which factors most impact maximum height achieved.
+
+
+### The Dataset
 
 For our final project, we decided to use a dataset compiled by Alex Cookson, where he first posted it to his blog at https://www.alexcookson.com/post/analyzing-himalayan-peaks-first-ascents/ , which we were able to then later find in the tidytuesday
 github repository at https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-09-22/readme.md. 
@@ -33,6 +34,11 @@ This data was collected by [The Himalayan Database](https://www.himalayandatabas
 ### Scientific Context
 
 For mountain climbing enthusiasts, there is no greater story to tell than the one of how high they climbed in the Himalayan mountains. But climbing these uniquely enormous mountains is more than just pride, about one quarter of peaks in the Himalayan mountain range have never been climbed before. The human sense of adventure is insatiable, and not even the dangers of altitude sickness, extreme temperatures, and ever changing terrain can dissuade people from trying to climb up these mountains. Given the high level of danger and difficulty involved, it is important for climbers to understand factors that contribute to a successful climb, because if they don't the trip could be deadly for them and their sherpas. So how do climbers achieve the highest height they can? That is what we aim to answer with our analysis of this data.
+
+### Refining our data
+
+After playing around with our data for some time, we realized that having every single mountain in our dataset was too many data points and produced jumbled up results due to the severe differences in the mountains. In order to solve this, we decided that we would refine our data down to just the expeditions held on 1 mountain, as it would better show us the impact each explanatory variable had. When it came down to what mountain to decide, we looked at how many datapoints they had, as well as the range of our numerical variables. For this, we decided to use mount Cho Oyu, as it had 1332 data points, a nice amount that was not too high nor too low. This mountain also had good variablity when it came to member size and numbers of hired staff, making it a safe pick to examine our results from.    
+
 
 
 ### Codebook
