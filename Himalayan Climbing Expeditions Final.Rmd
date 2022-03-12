@@ -21,6 +21,8 @@ expeditions <- readr::read_csv('https://raw.githubusercontent.com/rfordatascienc
 
 SHOULD MAKE AN INTRODUCTION MORE ABOUT THE TOPIC THAN ABOUT THE DATASET, Talk about how we are deciding to just use Everest to keep consistent data, and how it still has enough datapoints. 
 
+This analysis will focus on climbing data for a Himalyan Mountain called 'Cho Oyu'. Cho Oyu is the sixth highest mountain on the planet, with a peak at 8188 meters above sea level. The reason we've chosen this peak is that it is considered to be one of the most accessible peaks in the Himalayas, and as such is a popular destination for climbers of many different skill levels. Note: referring to a 8000+ meter mountain as 'accessible' is a little bit of an oxymoron, but when compared to notoriously difficult mountains like K2 and Everest, the description is fairly accurate. The original data set is incredibly large, and contains data for many mountains, both hundreds of meter taller, and shorter than Cho Oyu. Choosing one mid-to-tall peak allows us to see the true effect of all the variables without being limited by the size of difficulty of other peaks. Additionally, Cho Oyu alone has more than enough data entries to make and educated conclusion about which factors most impact maximum height achieved.
+
 For our final project, we decided to use a dataset compiled by Alex Cookson, where he first posted it to his blog at https://www.alexcookson.com/post/analyzing-himalayan-peaks-first-ascents/ , which we were able to then later find in the tidytuesday
 github repository at https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-09-22/readme.md. 
 
