@@ -203,7 +203,5 @@ highpoint (meters) = 7812 + 18.3(party size) - 64.1(if Used Agency) -87.2(if Spr
 
 ### Model 3
 ```{r model3, echo = FALSE, warning = FALSE}
-#Alex
-```
 
-Explanation
+```
