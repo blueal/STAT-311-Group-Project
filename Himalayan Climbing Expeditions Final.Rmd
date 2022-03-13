@@ -207,3 +207,16 @@ highpoint (meters) = 7812 + 18.3(party size) - 64.1(if Used Agency) -87.2(if Spr
 ```
 
 Explanation
+
+
+### Model Choice
+
+Model  | R^2   | RMSE
+-------|-------|------
+Carter | 0.123 | 545.2
+Jack   | 0.064 | 564.4
+Alex   | 0.000 | 000.0
+
+We chose Carter's model because...
+
+#### Fitting model to the whole data set
