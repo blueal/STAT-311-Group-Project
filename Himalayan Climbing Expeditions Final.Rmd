@@ -45,7 +45,6 @@ After playing around with our data for some time, we realized that having every 
 
 Name of Variable   | Explanation
 -------------------|-------------
-expedition_id      | A unique chr that corresponds to each expedition
 peak_name          | The name (chr) of the peak that this expedition is climbing
 year               | The year (dbl) during which the expedition happened
 season             | The season the expedition happend in as a chr, either 'Spring', 'Autumn', 'Winter', or 'Summer'
@@ -60,12 +59,12 @@ trekking_agency    | The chr name of trekking agency from which the hired staff 
 
 ### Glimpse of our data
 ```{r codeblock1, echo = FALSE}
+expeditions <-  expeditions %>%
+  filter(peak_name == "Cho Oyu") %>%
+  select(peak_name, year, season, highpoint_metres, members, member_deaths, hired_staff,
+         hired_staff_deaths, oxygen_used, trekking_agency)
+
 glimpse(expeditions)
-```
-
-
-```{r refiningData, echo = FALSE, warning= FALSE}
-expeditions <- filter(expeditions, peak_name == "Cho Oyu")
 ```
 
 
