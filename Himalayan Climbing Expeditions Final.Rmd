@@ -150,7 +150,7 @@ Looking at our model, we get a R^2 value of 0.123, and an adjusted R^2 value of 
 
 #### New Calculated Variables for Modeling
 
-```{r calculated-variables, echo = FALSE}
+```{r calculated-variables, echo = FALSE, warning = FALSE}
 m2_df <- expeditions %>% 
   mutate(trek = ifelse(is.na(trekking_agency), "No Agency", "Used Agency"))
 
@@ -165,7 +165,7 @@ m2_test <- testing(m2_df_split)
 
 #### Party Size Bootstrap Visual
 
-```{r party-size-bootstrap-dist, echo = FALSE}
+```{r party-size-bootstrap-dist, echo = FALSE, warning = FALSE}
 m2_boot_df <- m2_train %>% specify(highpoint_metres ~ party_size) %>%
                 generate(reps = 1000, type = "bootstrap") %>%
                 calculate(stat = "slope")
@@ -186,7 +186,7 @@ glance(m2_main_fit) %>% select(r.squared, adj.r.squared)
 
 #### Model Evaluation
 
-```{r evaluate-m2, echo = FALSE}
+```{r evaluate-m2, echo = FALSE, warning = FALSE}
 hp_pred <- predict(m2_main_fit, newdata=m2_test) %>%
   bind_cols(m2_test %>% select(highpoint_metres) ) %>%
   rename(pred = ...1)
