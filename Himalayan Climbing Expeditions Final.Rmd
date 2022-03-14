@@ -200,11 +200,55 @@ The goal of this model is to predict how high a given expedition will reach usin
 highpoint (meters) = 7812 + 18.3(party size) - 64.1(if Used Agency) -87.2(if Spring) - 348.7(if Summer) - 100.8(if Winter). The RMSE of my model is 564.4 which indicates that there is a moderately large difference between the model's prediction and the actual value. A few hundred meters on an 8000 meter mountain isn't that big of a deal, but in a place as dangerous as the Himalayas even a centimeter counts.
 
 
-### Model 3
-```{r model3, echo = FALSE, warning = FALSE}
+### Model 
 
+Variables to use
+highpoint_metres = dead, season, party_size
+
+
+```{r model3,echo = FALSE}
+m3_df <- expeditions %>% mutate(party_size = members, hired_staff)
+m3_df <- m3_df %>% mutate(party_dead = member_deaths + hired_staff_deaths)
+m3_df <- m3_df %>% na.omit(party_size, party_dead, highpoint_metres)
+m3_df <- m3_df %>% mutate(agency_used = ifelse(trekking_agency == "None", "No Agency", "Used Agency"))
+
+
+graph3 <- m3_df %>% ggplot(mapping = aes(x = party_size,y = highpoint_metres)) +
+  geom_point() +
+  geom_smooth(method = "loess", formula = y ~ x)
+
+graph2 <- m3_df %>% ggplot(mapping = aes(x = party_dead,y = highpoint_metres)) +
+  geom_point() +
+  geom_smooth(method = "loess", formula = y ~ x)
+
+graph3 <- m3_df %>% ggplot(mapping = aes(x = agency_used, y = highpoint_metres)) +
+  geom_boxplot(outlier.colour="black", outlier.shape=4,
+             outlier.size=2, notch=FALSE)
+
+graph1+graph2+graph3
+
+set.seed(3521)
+
+m3_df_split <- initial_split(m3_df, prop = 0.8)
+m3_train <- training(m3_df_split)
+m3_test <- testing(m3_df_split)
+
+m3_fit <- lm(highpoint_metres ~ party_size + party_dead + agency_used, data=m3_train)
+
+m3_pred <-predict(m3_fit, newdata=m3_test)  %>%
+  bind_cols(m3_test %>% select(highpoint_metres) ) %>% 
+  rename(pred = ...1)
+
+glance(m3_fit) %>% select(r.squared, adj.r.squared)
+
+glimpse(m3_pred)
+
+rmse(m3_pred, truth=highpoint_metres, estimate=pred)
 
 ```
+
+
+
 
 Explanation
 
