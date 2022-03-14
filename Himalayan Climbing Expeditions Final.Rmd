@@ -89,6 +89,8 @@ expeditions_test <- testing(expeditions_split)
 
 #### Model Proposed by Carter
 
+##### Picking the variables.
+
 ```{r model1_explanation, warning=FALSE, echo = FALSE}
 
 graph1 <- expeditions_train %>% ggplot(mapping = aes(x = members,y = highpoint_metres)) +
@@ -112,7 +114,7 @@ graph1+graph2+graph3
 #### Interpretation
 When deciding on what 3 explanatory variables I would be using for my model in order to best predict my response variable, I first started out with some background research to get a few ideas. First off, I looked at oxygen_used, and found many benefits to including the use of oxygen while reaching very high elevations. I also found research on the differences of climbing season. These looked like two very good categorical variables, I needed a numeric. To further look into this, I decided to make 3 seperate graphs with each of the variables I wished to use and saw how they individually looked against highpoint_metres. First off, I started with a point graph and looked at the correlation between members and highpoint, and saw that as the members increased the highpoint would also increase, but not by very much amount. Next, I looked at boxplots between if oxygen was used and its correlation to highpoint. Looking at this plot, we can clearly see that we would expect those who use oxygen to reach a higher point, as they appear to have an average and inter-quartile range much higher than those who do not use oxygen. Last off, I look at the effect season had on the high point, and saw some interesting results. First off, it appears we would get the highest on average with the least amount of range in Autumn. In spring the median is the same as autumn, but has more range in the 25%-50% quartile. Winter shows a slightly lower median, and then lastly we see summer with the lowest. These charts help us better understand what values and correlations to expect when we are making our model.  
 
-
+#### Making the model
 
 ```{r model1, echo = FALSE, warning = FALSE}
 
@@ -148,7 +150,7 @@ Looking at our model, we get a R^2 value of 0.123, and an adjusted R^2 value of 
 
 #### New Calculated Variables for Modeling
 
-```{r calculated-variables, echo = FALSE}
+```{r calculated-variables, echo = FALSE, warning = FALSE}
 m2_df <- expeditions %>% 
   mutate(trek = ifelse(is.na(trekking_agency), "No Agency", "Used Agency"))
 
@@ -163,7 +165,7 @@ m2_test <- testing(m2_df_split)
 
 #### Party Size Bootstrap Visual
 
-```{r party-size-bootstrap-dist, echo = FALSE}
+```{r party-size-bootstrap-dist, echo = FALSE, warning = FALSE}
 m2_boot_df <- m2_train %>% specify(highpoint_metres ~ party_size) %>%
                 generate(reps = 1000, type = "bootstrap") %>%
                 calculate(stat = "slope")
@@ -184,7 +186,7 @@ glance(m2_main_fit) %>% select(r.squared, adj.r.squared)
 
 #### Model Evaluation
 
-```{r evaluate-m2, echo = FALSE}
+```{r evaluate-m2, echo = FALSE, warning = FALSE}
 hp_pred <- predict(m2_main_fit, newdata=m2_test) %>%
   bind_cols(m2_test %>% select(highpoint_metres) ) %>%
   rename(pred = ...1)
