@@ -272,6 +272,8 @@ highpoint (meters) = 7812 + 15.9(party size) - 109(party_dead) - 84.7(agency_use
 
 #### Justification and Explanation
 
+Our equation is relatively simple. For every member added to our group, we expect the highest point reached to increase by 15.9 meters. For every person to die on a trek, we expect the peak to decrease by 109 meters. If an agency was used, we expect the elevation to decrease a static 84.7 meters. This is an odd conclusion to reach for trekking agency, because we would assume that if an agency was used, we would achieve a higher elevation. However our data suggests otherwise.
+
 This model was intended to see if including deaths was a viable method of predicting a treks highest peak. Our r squared was about 0.0489 which is very low. This would indicate that this is not a very accurate solution. However, the RMSE was 564, which is relatively close to the other models
 
 
