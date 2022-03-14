@@ -224,6 +224,7 @@ graph3 <- m3_df %>% ggplot(mapping = aes(x = agency_used, y = highpoint_metres))
 graph1+graph2+graph3
 
 ```
+
 I created these graphs to explore different variables and combinations. I explored the data, and looked up some basic articles about expeditions to get an idea of what I should be looking for.
 
 For my model, I chose to predict the highest point reached by using the variables of party_size (members + hired_staff). I chose to make this variable due to the common phrase "safety in numbers" and the data seems to show that is accurate.
@@ -231,6 +232,8 @@ For my model, I chose to predict the highest point reached by using the variable
 I also chose to choose to create the variable of how many people died on the expedition (member_deaths + hired_staff_deaths), and whether or not they used a trekking agency. Looking at each of the graphs above, we see some positive correlations across each of the variables.
 
 Party size and deaths both increase the average highest peak reached. Those that didn't use a trekking agency, showed higher peaks. 
+
+#### Model
 
 ```{r model3code, warning=FALSE, message=FALSE,echo = FALSE}
 set.seed(3521)
@@ -249,16 +252,25 @@ tidy(m3_fit)
 
 glance(m3_fit) %>% select(r.squared, adj.r.squared)
 
+```
+
+#### Model Evaluation
+
+```{r model3code2, warning=FALSE, message=FALSE,echo = FALSE}
+
 glimpse(m3_pred)
 
 rmse(m3_pred, truth=highpoint_metres, estimate=pred)
 
 ```
 
+#### Equation
 
+highpoint (meters) = 7812 + 15.9(party size) - 109(party_dead) - 84.7(agency_used)
 
+#### Justification and Explanation
 
-Explanation
+This model was intended to see if including deaths was a viable method of predicting a treks highest peak. Our r squared was about 0.0489 which is very low. This would indicate that this is not a very accurate solution. However, the RMSE was 564, which is relatively close to the other models
 
 
 
@@ -268,7 +280,7 @@ Model  | R^2   | RMSE
 -------|-------|------
 Carter | 0.123 | 545.2
 Jack   | 0.064 | 564.4
-Alex   | 0.000 | 000.0
+Alex   | 0.049 | 558.0
 
 When examining at the different models as well as the R^2 and RMSE values, we decided that we would use data set #1 to use for the third part of this assignment. This model has the best fit to the data, and also can help us answer our scientific question of how can climbers achieve the highest height they can while climbing mountains. Apart from the metrics, the variables included in the model provide the most logical set of choices a prospective climber could make. Things like whether to use oxygen or not and what season to begin the expedition in are very tangible for climbers planning a trip, so it makes sense to use these easily controllable things in the model.
 
