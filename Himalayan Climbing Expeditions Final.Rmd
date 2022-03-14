@@ -202,12 +202,79 @@ The goal of this model is to predict how high a given expedition will reach usin
 highpoint (meters) = 7812 + 18.3(party size) - 64.1(if Used Agency) -87.2(if Spring) - 348.7(if Summer) - 100.8(if Winter). The RMSE of my model is 564.4 which indicates that there is a moderately large difference between the model's prediction and the actual value. A few hundred meters on an 8000 meter mountain isn't that big of a deal, but in a place as dangerous as the Himalayas even a centimeter counts.
 
 
-### Model 3
-```{r model3, echo = FALSE, warning = FALSE}
-#Alex
+### Model Proposed by Alex
+```{r model3prep,message=FALSE, warning=FALSE, echo = FALSE}
+m3_df <- expeditions
+m3_df <- m3_df %>% mutate(party_size = members + hired_staff)
+m3_df <- m3_df %>% mutate(party_dead = member_deaths + hired_staff_deaths)
+m3_df <- m3_df %>% na.omit(party_size, party_dead, highpoint_metres)
+m3_df <- m3_df %>% mutate(agency_used = ifelse(trekking_agency == "None", "No Agency", "Used Agency"))
+
+
+graph1 <- m3_df %>% ggplot(mapping = aes(x = party_size,y = highpoint_metres)) +
+  geom_point() +
+  geom_smooth(method = "loess", formula = y ~ x)
+
+graph2 <- m3_df %>% ggplot(mapping = aes(x = party_dead,y = highpoint_metres)) +
+  geom_point() +
+  geom_smooth(method = "loess", formula = y ~ x)
+
+graph3 <- m3_df %>% ggplot(mapping = aes(x = agency_used, y = highpoint_metres)) +
+  geom_boxplot(outlier.colour="black", outlier.shape=4,
+             outlier.size=2, notch=FALSE)
+
+graph1+graph2+graph3
+
 ```
 
-Explanation
+I created these graphs to explore different variables and combinations. I explored the data, and looked up some basic articles about expeditions to get an idea of what I should be looking for.
+
+For my model, I chose to predict the highest point reached by using the variables of party_size (members + hired_staff). I chose to make this variable due to the common phrase "safety in numbers" and the data seems to show that is accurate.
+
+I also chose to choose to create the variable of how many people died on the expedition (member_deaths + hired_staff_deaths), and whether or not they used a trekking agency. Looking at each of the graphs above, we see some positive correlations across each of the variables.
+
+Party size and deaths both increase the average highest peak reached. Those that didn't use a trekking agency, showed higher peaks. 
+
+#### Model
+
+```{r model3code, warning=FALSE, message=FALSE,echo = FALSE}
+set.seed(3521)
+
+m3_df_split <- initial_split(m3_df, prop = 0.5)
+m3_train <- training(m3_df_split)
+m3_test <- testing(m3_df_split)
+
+m3_fit <- lm(highpoint_metres ~ party_size + party_dead + agency_used, data=m3_train)
+
+m3_pred <-predict(m3_fit, newdata=m3_test)  %>%
+  bind_cols(m3_test %>% select(highpoint_metres) ) %>% 
+  rename(pred = ...1)
+
+tidy(m3_fit)
+
+glance(m3_fit) %>% select(r.squared, adj.r.squared)
+
+```
+
+#### Model Evaluation
+
+```{r model3code2, warning=FALSE, message=FALSE,echo = FALSE}
+
+glimpse(m3_pred)
+
+rmse(m3_pred, truth=highpoint_metres, estimate=pred)
+
+```
+
+#### Equation
+
+highpoint (meters) = 7812 + 15.9(party size) - 109(party_dead) - 84.7(agency_used)
+
+#### Justification and Explanation
+
+Our equation is relatively simple. For every member added to our group, we expect the highest point reached to increase by 15.9 meters. For every person to die on a trek, we expect the peak to decrease by 109 meters. If an agency was used, we expect the elevation to decrease a static 84.7 meters. This is an odd conclusion to reach for trekking agency, because we would assume that if an agency was used, we would achieve a higher elevation. However our data suggests otherwise.
+
+This model was intended to see if including deaths was a viable method of predicting a treks highest peak. Our r squared was about 0.0489 which is very low. This would indicate that this is not a very accurate solution. However, the RMSE was 564, which is relatively close to the other models
 
 
 
@@ -217,7 +284,7 @@ Model  | R^2   | RMSE
 -------|-------|------
 Carter | 0.123 | 545.2
 Jack   | 0.064 | 564.4
-Alex   | 0.000 | 000.0
+Alex   | 0.049 | 558.0
 
 When examining at the different models as well as the R^2 and RMSE values, we decided that we would use data set #1 to use for the third part of this assignment. This model has the best fit to the data, and also can help us answer our scientific question of how can climbers achieve the highest height they can while climbing mountains. Apart from the metrics, the variables included in the model provide the most logical set of choices a prospective climber could make. Things like whether to use oxygen or not and what season to begin the expedition in are very tangible for climbers planning a trip, so it makes sense to use these easily controllable things in the model.
 
@@ -240,3 +307,4 @@ When looking at the main model equation that we made, we can interpret a few thi
 
 #### How do climbers maximize their height?
 As shown by our model, we can see that there are a few things that climbers can do in order to give them a boost to reach their highest point possible. First off, one of the most important things that climbers can do is to invest in the use of oxygen. Climbers that use oxygen reach higher peaks than when compared to climbers that do not. Next, when climbers are picking a season to attempt their climb, our data shows that in order to maximize their high point, they should choose the summer rather than the other seasons, as it was the only one that offered a positive boost in altitude. Finally, when we are looking at the number of members in climbing groups, we can see that it would be advantageous for climbers to attempt their climb with a group with higher numbers. Having more people in your group can benefit climbers and help them reach a higher point then they would without those people.
+
