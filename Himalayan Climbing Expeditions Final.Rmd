@@ -136,7 +136,7 @@ rmse(expeditions_pred, truth = highpoint_metres, estimate = pred)
 #### Explanation:
 
 ##### Main Model Equation
-Highpoint_metres = 7667.79 + 22.53*Memebers + 285.62*Oxygen_usedTRUE + 5.47*WinterYes - 58.25*SpringYes - + 245.23*SummerYes
+Highpoint_metres = 7667.79 + 22.53*Memebers + 285.62*Oxygen_usedTRUE + 5.47*WinterYes - 58.25*SpringYes - 245.23*SummerYes
 
 ##### Main Model Interpretation:
 When looking at the main model equation that we made, we can intrepet a few things. First off, our intercept is 7667.79, meainging if you put in 0 for all of the values, we would expect the climber to make it up to 7667.79 meters. Now when we look at memebers, we can see a coefficient of 22.53, meaning that with each member you add, you are expected to reach 22.53 meters higher on average. Although this does not seem very significant, some parties can have 30 to 40 members, which gives a huge boost to the height you would be expected to reach. Looking at the oxygen categorical variable, we can see that if you use oxygen you are expected to reach 285.62 meters higher on average, which is a pretty significant value. Looking at the seasons, we can see that it is using autumn as a baseline, so for that season you do not add or subtract anything. For the summer on average you would lose 245.23 meters on your high point, in the spring you would lose 58.25 meters on average for your high point, and finally in the winter you would expect to gain only 5 meters on average to your high point. 
@@ -209,6 +209,7 @@ highpoint (meters) = 7812 + 18.3(party size) - 64.1(if Used Agency) -87.2(if Spr
 Explanation
 
 
+
 ### Model Choice
 
 Model  | R^2   | RMSE
@@ -217,6 +218,24 @@ Carter | 0.123 | 545.2
 Jack   | 0.064 | 564.4
 Alex   | 0.000 | 000.0
 
-We chose Carter's model because...
+When examining at the different models as well as the R^2 and RMSE values, we decided that we would use data set #1 to use for the third part of this assignemnt. This model has the best fit to the data, and also can help us answer our scientific question of how can climbers achieve the highest height they can while climbing mountains. 
 
-#### Fitting model to the whole data set
+```{r finalModel, echo = FALSE, warning = FALSE}
+
+expeditions_model <- lm(highpoint_metres ~ members + oxygen_used + 
+                        season, data = expeditions)
+tidy(expeditions_model)
+
+
+glance(expeditions_model) %>% select(r.squared, adj.r.squared)
+
+```
+
+##### Main Model Equation
+Highpoint_metres = 7699.19 + 18.39*Memebers + 298.03*Oxygen_usedTRUE + 50.40*SummerYes - 83.56*SpringYes - 170.61*WinterYes
+
+##### Main Model Interpretation:
+When looking at the main model equation that we made, we can intrepet a few things. First off, our intercept is 7699.19, meainging if you put in 0 for all of the values, we would expect the climber to make it up to 7699.19 meters. This number being so high can likley be explained by how high basecamps are, as they do start at a very high elevation to begin with. Now when we look at our numerical variable of members, we can see a coefficient of 18.39, meaning that with each member you add, you are expected to reach 18.39 meters higher on average. Even though this value does not seem very significant at first, some parties can have 30 to 40 members, which can give a boost of hundreds of meters for climbers, helping them maximize their highpoint on the mountain. Next we look at the use of oxygen as a categorical variable, we can see that if you use oxygen you are expected to reach 298.03 meters higher on average, which provides a significant boost just with the use which should encourage climbers to invest in using oxygen if they are trying to achieve their maximum height. Next we can look at our next categorical variable which is the seasons. We can see that it is using autumn as a baseline, so for that season you do not add or subtract anything. For the winter on average you would lose 170.61 meters on your high point, in the spring you would lose 83.56 meters on average for your high point, and finally in the summer you would expect to gain only 50.40 meters on average to your high point. 
+
+#### How do climbers maximize their height?
+As shown by our model, we can see that there are a few things that climbers can do in order to give them a boost to reach their highest point possible. First off, one of the most important things that climbers can do is to invest in the use of oxygen. Climbers that use oxygen reach higher peaks than when compared to climbers that do not. Next, when climbers are picking a season to attempt their climb, our data shows that in order to maximize their high point, they should choose the summer rather than the other seasons, as it was the only one that offered a positive boost in altitude. Finally, when we are looking at the number of members in climbing groups, we can see that it would be advantageous for climbers to attempt their climb with a group with higher numbers. Having more people in your group can benefit climbers and help them reach a higher point then they would without those people.
